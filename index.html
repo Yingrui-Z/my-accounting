@@ -163,6 +163,7 @@
             <div class="tab" data-tab="list">查看<br>记录</div>
             <div class="tab" data-tab="stats">数据<br>统计</div>
             <div class="tab" data-tab="export">导出<br>导入</div>
+            <div class="tab" data-tab="settings">选项<br>设置</div>
         </div>
     </div>
 
@@ -171,11 +172,7 @@
         <div class="row">
             <div class="col">
                 <label>🏙️ 城市</label>
-                <select id="city" onchange="toggleCustomCity()">
-                    <option value="">请选择（可选）</option>
-                    <option>洛桑</option><option>日内瓦</option><option>马德里</option><option>巴塞罗那</option><option>阿姆斯特丹</option><option>鹿特丹</option><option>哥本哈根</option><option>雅典</option><option>北京</option>                    
-                    <option value="other">其他（自定义）</option>
-                </select>
+                <select id="city"></select>
             </div>
             <div class="col">
                 <label>📅 日期与时间</label>
@@ -183,27 +180,17 @@
                 <div class="error-msg" id="error-datetime">请输入有效的日期和时间</div>
             </div>
         </div>
-        <input id="customCity" style="display:none; margin-top:-8px; margin-bottom:8px;" placeholder="请输入自定义城市">
         
         <div class="row">
             <div class="col">
                 <label>👤 付款人</label>
-                <select id="payer" onchange="toggleCustomPayer()">
-                    <option>ZYR</option><option>TL</option>
-                    <option value="other">其他（自定义）</option>
-                </select>
+                <select id="payer"></select>
             </div>
             <div class="col">
                 <label>💳 付款渠道</label>
-                <select id="channel" onchange="toggleCustomChannel()">
-                    <option>信用卡</option><option>现金</option><option>银行卡</option><option>微信</option><option>支付宝</option>
-                    <option value="other">其他（自定义）</option>
-                </select>
+                <select id="channel"></select>
             </div>
         </div>
-        <input id="customPayer" style="display:none; margin-top:-8px; margin-bottom:8px;" placeholder="请输入自定义付款人"> 
-        <input id="customChannel" style="display:none; margin-top:-8px; margin-bottom:8px;" placeholder="请输入自定义付款渠道"> 
-
 
         <div class="row" style="--gap: 8px;"> 
             <div class="col">
@@ -213,22 +200,13 @@
             </div>
             <div class="col">
                 <label>💴 币种</label>
-                <select id="currency" onchange="toggleCustomCurrency()">
-                    <option>瑞郎</option><option>美元</option><option>人民币</option><option>欧元</option><option>丹麦克朗</option>
-                    <option value="other">其他（自定义）</option>
-                </select>
+                <select id="currency"></select>
             </div>
             <div class="col">
                 <label>📋 账单所有人</label>
-                <select id="billOwner" onchange="toggleCustomOwner()">
-                    <option>ZYR</option><option>TL</option><option>公共</option>
-                    <option value="other">其他（自定义）</option>
-                </select>
+                <select id="billOwner"></select>
             </div>
         </div>
-
-        <input id="customCurrency" style="display:none; margin-bottom:8px;" placeholder="请输入自定义币种">
-        <input id="customBillOwner" style="display:none; margin-top:-8px; margin-bottom:8px;" placeholder="请输入自定义账单所有人">
         
         <label>🏷️ 标签</label>
         <input id="tag" placeholder="例如：吃饭/交通/纪念品">
@@ -241,8 +219,6 @@
         <div style="display:flex;gap:10px; margin-top:8px" class="submit-actions">
             <button class="primary" id="submitBtn">✨ 提交记录</button>
         </div>
-
-        <!-- <p class="note">提交后数据保存在本地浏览器（localStorage）。</p> -->
     </div>
 
     <div id="list" class="card" style="display:none">
@@ -272,7 +248,6 @@
                 <select id="filterCity"></select>
                 <select id="filterOwner"></select> 
             </div>
-
 
             <div id="batchTrashControls">
                 <div class="batch-controls-left">
@@ -374,7 +349,6 @@
         <div style="display:flex;gap:8px;margin-top:10px" class="export-actions">
             <button class="export" onclick="exportJSON()">导出 JSON</button>
             <button class="export" onclick="exportCSV()">导出 CSV</button>
-            <!-- <button class="export" onclick="exportTXT()">导出 TXT</button> -->
         </div>
 
         <div style="margin-top:20px;">
@@ -384,18 +358,20 @@
                 <input type="file" id="jsonInput" accept=".json" style="flex:1"/>
                 <button class="primary" onclick="importJSON()" style="flex:0 0 90px;">导入 JSON</button>
             </div>
-<!--             <div style="display:flex;gap:8px; align-items:center;">
-                <input type="file" id="csvInput" accept=".csv" style="flex:1"/>
-                <button class="primary" onclick="importCSV()" style="flex:0 0 90px;">导入 CSV</button>
-            </div> -->
         </div>
-<!-- 
-        <p class="note" style="margin-top:12px">
-            PWA 安装说明：请将此文件放到简单的本地服务器以获得完整的安装体验。
-        </p> -->
 
         <div style="margin-top:10px">
             <button class="ghost" id="promptInstallBtn" style="display:none">安装到手机桌面</button>
+        </div>
+    </div> 
+    
+    <div id="settings" class="card" style="display:none">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>⚙️ 选项配置管理</strong>
+            <button class="ghost" style="width:auto; padding:6px 12px; margin:0; font-size:13px;" onclick="resetConfig()">🔄 恢复默认</button>
+        </div>
+        <p class="note" style="margin-bottom: 12px; margin-top: 12px;">在此添加或删除表单下拉选项。删除或重置这里的选项不会影响已有的历史记录。</p>
+        <div id="settingsContainer">
         </div>
     </div>
 
@@ -414,32 +390,238 @@ const TRASH_KEY = "records_trash";
 const CITY_KEY = "last_city"; // 记录上次城市
 const COMMON_TAGS = ["吃饭", "交通", "门票", "住宿", "超市", "纪念品", "娱乐", "零食", "咖啡", "衣服" , "物资", "签证"];
 
-/**
- * UPDATED: Exchange Rates
- */
-const EXCHANGE_RATES = { 
-    "人民币": 1, 
-    "美元": 6.89, 
-    "瑞郎": 8.7, 
-    "欧元": 7.89,
-    "丹麦克朗": 1.057,
-    "其他": 1, 
-    "未知币种": 1 
+// 全局缓存汇率，避免在图表统计海量数据时频繁解析 localStorage
+let CACHED_RATES = {};
+
+/* ===========================
+   自定义配置管理 (Settings)
+   ============================ */
+const CONFIG_KEY = "account_configs";
+
+// 初始默认配置，新增了 rates (汇率) 属性
+const DEFAULT_CONFIG = {
+    city: ["洛桑","北京"],
+    payer: ["ZYR", "TL"],
+    channel: ["信用卡","现金","银行卡","微信","支付宝"],
+    currency: ["瑞郎","美元","人民币","欧元","丹麦克朗"],
+    owner: ["ZYR", "TL", "公共"],
+    rates: { "美元": 6.89, "瑞郎": 8.7, "欧元": 7.89, "丹麦克朗": 1.057 } // 默认汇率
 };
 
+// 对应的中文标题
+const CONFIG_LABELS = {
+    city: "🏙️ 城市",
+    payer: "👤 付款人",
+    channel: "💳 付款渠道",
+    currency: "💴 币种",
+    owner: "📋 账单所有人"
+};
 
+// 加载配置
+function loadConfig() {
+    try {
+        let conf = JSON.parse(localStorage.getItem(CONFIG_KEY));
+        if (!conf) conf = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        
+        let defaultConf = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        let isPatched = false;
+        
+        // 更严格的对比：补全缺失的数组配置，并深度补全对象(如 rates)
+        for (let key in defaultConf) {
+            if (!conf[key]) {
+                conf[key] = defaultConf[key];
+                isPatched = true;
+            } else if (Array.isArray(defaultConf[key]) && !Array.isArray(conf[key])) {
+                conf[key] = defaultConf[key];
+                isPatched = true;
+            } else if (!Array.isArray(defaultConf[key]) && typeof defaultConf[key] === 'object') {
+                for (let subKey in defaultConf[key]) {
+                    if (conf[key][subKey] === undefined) {
+                        conf[key][subKey] = defaultConf[key][subKey];
+                        isPatched = true;
+                    }
+                }
+            }
+        }
+        
+        // 发现缺失立刻覆盖
+        if (isPatched) {
+            localStorage.setItem(CONFIG_KEY, JSON.stringify(conf));
+        }
+        
+        // 更新内存中的全局缓存，供图表高速读取
+        CACHED_RATES = conf.rates || {};
+        
+        return conf;
+    } catch(e) {
+        const fallback = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        CACHED_RATES = fallback.rates;
+        return fallback;
+    }
+}
 
-// 动态生成汇率说明文字
-const noteElement = document.getElementById('exchange-rate-note');
-noteElement.innerHTML = `所有统计图的金额已统一折算为人民币 (CNY)。汇率: 
-    美元 ${EXCHANGE_RATES["美元"]}, 
-    瑞郎 ${EXCHANGE_RATES["瑞郎"]}, 
-    欧元 ${EXCHANGE_RATES["欧元"]},
-    丹麦克朗 ${EXCHANGE_RATES["丹麦克朗"]}。
-`;
+// 恢复默认配置功能
+function resetConfig() {
+    if (!confirm("确定要重置所有选项为默认状态吗？\n\n请放心，您的历史记账数据绝对安全，不受任何影响。")) return;
+    
+    // 直接强制写入初始配置
+    const defaultData = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    saveConfig(defaultData);
+    
+    hopFeedback("选项已恢复默认");
+}
+
+// 保存配置并更新视图
+function saveConfig(conf) {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(conf));
+    CACHED_RATES = conf.rates || {};
+    renderFormSelects(); // 更新表单的下拉框
+    renderSettings();    // 刷新设置视图
+}
+
+// 动态生成汇率说明文字（支持在设置页面修改后动态刷新）
+function updateRateNote() {
+    const r = CACHED_RATES;
+    const noteElement = document.getElementById('exchange-rate-note');
+    if (noteElement) {
+        // 取出现有币种动态生成文字
+        const textArr = Object.keys(r).map(cur => `${cur} ${r[cur]}`);
+        noteElement.innerHTML = `所有统计图的金额已统一折算为人民币 (CNY)。当前配置汇率: <br>${textArr.join(', ')}。`;
+    }
+}
+
+// 更新特定币种的汇率
+function updateRate(currency, newVal) {
+    const conf = loadConfig();
+    const val = parseFloat(newVal);
+    if (isNaN(val) || val <= 0) return hopFeedback("请输入有效的汇率");
+    
+    conf.rates[currency] = val;
+    saveConfig(conf);
+    hopFeedback(`${currency} 汇率已更新`);
+    updateRateNote(); // 同步刷新图表底部的提示文字
+    drawCharts();     // 汇率改变后，重绘所有图表以应用新汇率
+}
+
+// 动态渲染“填写账单”页面的 <select> 选项
+function renderFormSelects() {
+    const conf = loadConfig();
+    const map = { city: "city", payer: "payer", channel: "channel", currency: "currency", owner: "billOwner" };
+    
+    for (let key in map) {
+        const el = document.getElementById(map[key]);
+        if (!el) continue;
+        
+        const currentVal = el.value;
+        let html = key === "city" ? '<option value="">请选择（可选）</option>' : '';
+        
+        if (conf[key] && Array.isArray(conf[key])) {
+            conf[key].forEach(val => {
+                html += `<option value="${val}">${val}</option>`;
+            });
+        }
+        el.innerHTML = html;
+
+        if (currentVal && Array.from(el.options).some(opt => opt.value === currentVal)) {
+            el.value = currentVal;
+        }
+    }
+}
+
+// 渲染“设置”页面的列表
+function renderSettings() {
+    const conf = loadConfig();
+    const container = document.getElementById("settingsContainer");
+    container.innerHTML = "";
+
+    // 1. 渲染普通数组类配置
+    for (let key in conf) {
+        if (key === 'rates') continue; // 跳过汇率
+        
+        const section = document.createElement("div");
+        section.style.marginBottom = "20px";
+        section.innerHTML = `
+            <label>${CONFIG_LABELS[key]}</label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                ${(conf[key]||[]).map(val => `
+                    <div class="tag-cloud-item" style="display:flex; align-items:center; gap:4px; padding-right:4px; cursor:default;">
+                        <span>${val}</span>
+                        <span style="color:var(--danger); cursor:pointer; font-weight:bold; padding:2px 4px; font-size:16px;" onclick="removeConfigOption('${key}', '${val}')">×</span>
+                    </div>
+                `).join("")}
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-start;">
+                <input id="input-${key}" placeholder="添加新${CONFIG_LABELS[key] ? CONFIG_LABELS[key].split(' ')[1] : ''}..." style="margin-bottom:0; flex:1;">
+                <button class="ghost" style="width:auto; margin-bottom:0; flex-shrink:0; padding:12px 20px;" onclick="addConfigOption('${key}')">新增</button>
+            </div>
+        `;
+        container.appendChild(section);
+    }
+    
+    // 2. 渲染汇率配置区域
+    const rateSection = document.createElement("div");
+    rateSection.style.marginTop = "30px";
+    rateSection.style.borderTop = "1px solid #eee";
+    rateSection.style.paddingTop = "20px";
+    
+    let rateHtml = `<label>💰 汇率配置 (相对于人民币 CNY)</label>
+                    <p class="note">修改已有币种兑换人民币的比例。例如：填写 6.89，代表1该币种=6.89元人民币。</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; background:#f9f9f9; padding:12px; border-radius:8px;">`;
+    
+    for (let cur in conf.rates) {
+        rateHtml += `
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <span style="font-size:13px; font-weight:600; color:var(--muted);">${cur}</span>
+                <input type="number" step="0.001" value="${conf.rates[cur]}" 
+                       onchange="updateRate('${cur}', this.value)" 
+                       style="margin-bottom:0; padding:8px; font-size:14px; text-align:center;">
+            </div>`;
+    }
+    rateHtml += `</div>`;
+    rateSection.innerHTML = rateHtml;
+    container.appendChild(rateSection);
+}
+
+// 添加新选项
+function addConfigOption(key) {
+    const input = document.getElementById(`input-${key}`);
+    const val = input.value.trim();
+    if (!val) return hopFeedback("内容不能为空");
+    
+    const conf = loadConfig();
+    if (!conf[key]) conf[key] = [];
+    if (conf[key].includes(val)) return hopFeedback("该选项已存在");
+    
+    conf[key].push(val);
+    
+    // 如果添加的是新币种，同时在rates里注册默认汇率为 1
+    if (key === "currency") {
+        if (!conf.rates) conf.rates = {};
+        if (conf.rates[val] === undefined) conf.rates[val] = 1;
+    }
+    
+    saveConfig(conf);
+    hopFeedback("添加成功");
+    
+    if (key === "currency") {
+        setTimeout(() => {
+            alert("⚠️ 提示：您添加了新的币种。\n为了确保“数据统计”页面折算准确，请在下方的【汇率配置】中修改它对应的汇率，否则默认按 1:1 计算。");
+        }, 100);
+    }
+}
+
+// 删除选项
+function removeConfigOption(key, val) {
+    if (!confirm(`确定要移除选项 [${val}] 吗？\n(这不会影响以往记录)`)) return;
+    const conf = loadConfig();
+    conf[key] = conf[key].filter(item => item !== val);
+    saveConfig(conf);
+    hopFeedback("移除成功");
+}
 
 function convertToCNY(amount, currency){
-    const rate = EXCHANGE_RATES[currency] || 1; 
+    // 从已全局缓存的 CACHED_RATES 中直接提取
+    const rate = currency === "人民币" ? 1 : (CACHED_RATES[currency] || 1); 
     return (Number(amount) || 0) * rate;
 }
 
@@ -459,15 +641,10 @@ function saveTrash(list){
 
 /* init controls */
 const cityEl = document.getElementById("city"); 
-const customCityEl = document.getElementById("customCity"); 
 const currencyEl = document.getElementById("currency");
-const customCurrencyEl = document.getElementById("customCurrency");
 const channelEl = document.getElementById("channel"); 
-const customChannelEl = document.getElementById("customChannel"); 
 const payerEl = document.getElementById("payer"); 
-const customPayerEl = document.getElementById("customPayer"); 
 const billOwnerEl = document.getElementById("billOwner"); 
-const customBillOwnerEl = document.getElementById("customBillOwner"); 
 
 const amountEl = document.getElementById("amount");
 const datetimeEl = document.getElementById("datetime");
@@ -476,42 +653,16 @@ const tagEl = document.getElementById("tag");
 const submitBtn = document.getElementById("submitBtn");
 const tagCloudEl = document.getElementById("tagCloud");
 
-// Toggle Custom Inputs
-function toggleCustom(mainEl, customEl, valCheck="other") {
-    customEl.style.display = mainEl.value === valCheck ? "block" : "none";
-}
-function toggleCustomCurrency(){ toggleCustom(currencyEl, customCurrencyEl); }
-function toggleCustomChannel(){ toggleCustom(channelEl, customChannelEl); }
-function toggleCustomPayer(){ toggleCustom(payerEl, customPayerEl); }
-function toggleCustomCity(){ toggleCustom(cityEl, customCityEl); }
-function toggleCustomOwner(){ toggleCustom(billOwnerEl, customBillOwnerEl); }
-
 /* Set default time and Load last City */
 function initDefaults(){
     const now = new Date();
-    // Use Math.max to handle potential DST issues or inconsistencies with toISOString in some environments, ensuring 16 characters max.
     const localISO = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0,16); 
     datetimeEl.value = localISO;
 
-    // Load last city
     const lastCity = localStorage.getItem(CITY_KEY);
     if (lastCity) {
-        // Check if lastCity is in option list
-        let found = false;
-        Array.from(cityEl.options).forEach(opt => {
-            if (opt.value === lastCity) found = true;
-        });
-        
-        if (found) {
-            cityEl.value = lastCity;
-            customCityEl.value = ""; // Clear custom input if city is in list
-        } else {
-            cityEl.value = "other";
-            customCityEl.value = lastCity;
-            customCityEl.style.display = "block";
-        }
+        cityEl.value = lastCity;
     }
-    // Set default currency if not set
     if (!currencyEl.value) currencyEl.value = '瑞郎';
 }
 
@@ -522,7 +673,7 @@ function showError(el, msgElId) {
 }
 function clearError(el) {
     el.classList.remove("error-input");
-    const msgEl = el.nextElementSibling; // Assuming div.error-msg is next
+    const msgEl = el.nextElementSibling;
     if (msgEl && msgEl.classList.contains("error-msg")) msgEl.style.display = "none";
 }
 
@@ -536,7 +687,7 @@ function initTagCloud(){
         span.onclick = () => {
             let current = tagEl.value.trim();
             if (current && !current.endsWith('/')) current += '/'; 
-            if (!current.split('/').map(t=>t.trim()).includes(tag)) tagEl.value = current + tag + '/'; // Check if tag already exists in the slash-separated list
+            if (!current.split('/').map(t=>t.trim()).includes(tag)) tagEl.value = current + tag + '/'; 
             tagEl.focus();
         };
         tagCloudEl.appendChild(span);
@@ -546,17 +697,15 @@ initTagCloud();
 
 /* Submission Logic with Duplicate Check */
 submitBtn.addEventListener("click", ()=>{
-    const cur = currencyEl.value === "other" ? (customCurrencyEl.value || "其他") : currencyEl.value;
-    const channel = channelEl.value === "other" ? (customChannelEl.value || "其他") : channelEl.value; 
-    const payer = payerEl.value === "other" ? (customPayerEl.value || "其他") : payerEl.value; 
-    // If 'other' is selected but custom is empty, treat as '其他城市'
-    const city = cityEl.value === "other" ? (customCityEl.value || "其他城市") : (cityEl.value || "未指定城市"); 
-    const owner = billOwnerEl.value === "other" ? (customBillOwnerEl.value || "其他") : billOwnerEl.value; 
+    const cur = currencyEl.value;
+    const channel = channelEl.value; 
+    const payer = payerEl.value; 
+    const city = cityEl.value || "未指定城市"; 
+    const owner = billOwnerEl.value; 
     const amountVal = parseFloat(amountEl.value);
     
-    // Validation
     let isValid = true;
-    if (isNaN(amountVal) || amountVal === null){ // Check for NaN and null/undefined
+    if (isNaN(amountVal) || amountVal === null){ 
         showError(amountEl, "error-amount");
         isValid = false;
     }
@@ -566,7 +715,6 @@ submitBtn.addEventListener("click", ()=>{
     }
     if (!isValid) return;
 
-    // Save City preference
     if (city && city !== "未指定城市") localStorage.setItem(CITY_KEY, city);
 
     const newRecord = {
@@ -582,7 +730,6 @@ submitBtn.addEventListener("click", ()=>{
         note: noteEl.value || ""
     };
 
-    // MODIFICATION 1: Duplicate Detection (City + Amount + Currency + Payer + Channel + Owner)
     const list = loadRecords();
     const duplicate = list.find(r => 
         r.city === newRecord.city &&
@@ -607,8 +754,7 @@ function saveNewRecord(record, currentList = null) {
     
     hopFeedback("已保存");
     amountEl.value=""; noteEl.value=""; tagEl.value=""; 
-    // Do not clear city, retain it
-    initDefaults(); // Reset time to now
+    initDefaults();
     refreshList();
     drawCharts();
 }
@@ -632,7 +778,6 @@ function showDuplicateModal(oldRec, newRec) {
     document.getElementById("cancelDup").onclick = () => overlay.remove();
     
     document.getElementById("keepBothDup").onclick = () => {
-        // Add a note to distinguish the kept duplicates
         newRec.note = (newRec.note ? newRec.note + " " : "") + "(疑似重复项)";
         saveNewRecord(newRec);
         overlay.remove();
@@ -642,7 +787,6 @@ function showDuplicateModal(oldRec, newRec) {
         let list = loadRecords();
         const idx = list.findIndex(r => r.id === oldRec.id);
         if (idx !== -1) {
-            // Keep old ID but update all other fields with new data
             list[idx] = { ...newRec, id: oldRec.id }; 
             saveRecords(list);
             hopFeedback("已覆盖旧记录");
@@ -655,7 +799,6 @@ function showDuplicateModal(oldRec, newRec) {
     };
 }
 
-/* Feedback Toast */
 function hopFeedback(msg){
     const t = document.createElement("div");
     t.textContent = msg;
@@ -679,7 +822,7 @@ document.getElementById("tabs").addEventListener("click", (e)=>{
 });
 
 function showTab(name){
-    ["form","list","stats","export"].forEach(id=>{
+    ["form","list","stats","export","settings"].forEach(id=>{
         document.getElementById(id).style.display = (id===name) ? "block":"none";
     });
     if (name==="list") showRecordsList(); 
@@ -689,6 +832,7 @@ function showTab(name){
         }
         drawCharts(); 
     }
+    if (name==="settings") renderSettings();
 }
 
 /* ===========================
@@ -696,32 +840,27 @@ function showTab(name){
    ============================ */
 const recordsContainer = document.getElementById("recordsContainer");
 const totalCountEl = document.getElementById("totalCount");
-const sortOrderEl = document.getElementById("sortOrder"); // Sort Element
+const sortOrderEl = document.getElementById("sortOrder"); 
 const batchRestoreBtn = document.getElementById("batchRestoreBtn");
 const selectedTrashCountEl = document.getElementById("selectedTrashCount");
 
 let selectedIds = new Set(); 
-let selectedTrashIds = new Set(); // Separate tracking for trash
+let selectedTrashIds = new Set(); 
 let currentPage = 1; 
 
-// Listeners
 document.getElementById("pageSize").addEventListener("change", ()=> { currentPage=1; refreshList(); }); 
 document.getElementById("prevPageBtn").addEventListener("click", ()=> { currentPage--; refreshList(); });
 document.getElementById("nextPageBtn").addEventListener("click", ()=> { currentPage++; refreshList(); });
 
-// Filters & Sort
 ["search","filterPayer","filterChannel","filterTag","filterCurrency","filterCity","filterOwner","filterStartDate","filterEndDate"]
     .forEach(id => document.getElementById(id).addEventListener("change", ()=>{ currentPage=1; refreshList(); }));
 document.getElementById("search").addEventListener("input", ()=>{ currentPage=1; refreshList(); });
-sortOrderEl.addEventListener("change", refreshList); // Sort listener
+sortOrderEl.addEventListener("change", refreshList); 
 
-// Batch
-// MODIFICATION 2: Corrected toggleSelectAll listener
 document.getElementById("selectAllCheckbox").addEventListener("change", toggleSelectAll); 
 document.getElementById("batchDeleteBtn").addEventListener("click", batchDelete); 
 batchRestoreBtn.addEventListener("click", batchRestore);
 
-// Trash
 document.getElementById("openTrashBtn").addEventListener("click", showTrashList); 
 document.getElementById("closeTrashBtn").addEventListener("click", showRecordsList); 
 document.getElementById("clearTrashBtn").addEventListener("click", clearTrash); 
@@ -741,13 +880,12 @@ function populateFilterOptions(){
     const _fill = (id, set, lbl) => {
         const el = document.getElementById(id);
         const curr = el.value;
-        // Optimization: check if the options list needs a full rebuild
         const sortedOptions = Array.from(set).filter(x=>x).sort().join(',');
         const currentOptions = Array.from(el.options).filter((o,i)=>i>0).map(o=>o.value).join(',');
         
         if (sortedOptions !== currentOptions) {
             el.innerHTML = `<option value=''>${lbl}</option>` + Array.from(set).filter(x=>x).sort().map(x=>`<option value="${x}">${x}</option>`).join('');
-            el.value = curr; // Restore current selection
+            el.value = curr; 
         }
     };
     _fill("filterTag", tagSet, "全部标签");
@@ -793,18 +931,16 @@ function formatDateTimeCompact(s){
     try{
         const d = new Date(s);
         if (isNaN(d)) return s;
-        // Use options to ensure 2-digit format for consistency
         return d.toLocaleString('zh-CN', {month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }).replace(/\//g, '-').replace('年','-').replace('月','-').replace('日',''); 
     }catch(e){return s}
 }
 
-let currentDisplayRecords = []; // Store the records currently displayed on the page
+let currentDisplayRecords = [];
 
 function refreshList(){
     populateFilterOptions();
     let list = loadRecords();
 
-    // 4) Sorting Logic
     const sortType = sortOrderEl.value;
     list.sort((a, b) => {
         if (sortType === 'time_asc') return new Date(a.datetime) - new Date(b.datetime);
@@ -818,7 +954,6 @@ function refreshList(){
     totalCountEl.textContent = filtered.length;
     recordsContainer.innerHTML = "";
     
-    // Pagination
     const perPageVal = document.getElementById("pageSize").value;
     let limit = (perPageVal === 'all') ? filtered.length : parseInt(perPageVal);
     let totalPages = Math.ceil(filtered.length / limit) || 1;
@@ -883,12 +1018,10 @@ function updateSelectionState(){
     document.getElementById("selectAllCheckbox").checked = allOnPage;
 }
 
-// MODIFICATION 3: Corrected toggleSelectAll logic to use currentDisplayRecords
 function toggleSelectAll(){ 
     const master = document.getElementById("selectAllCheckbox");
     const isChecked = master.checked;
     
-    // Get current page IDs
     const currentRenderedIds = currentDisplayRecords.map(r => r.id);
 
     if (isChecked) {
@@ -897,12 +1030,11 @@ function toggleSelectAll(){
         currentRenderedIds.forEach(id => selectedIds.delete(id));
     }
     
-    // Update the visual state of individual checkboxes
     document.querySelectorAll(".list-check").forEach(cb => {
         cb.checked = isChecked;
     });
 
-    updateSelectionState(); // Update the count display
+    updateSelectionState(); 
 }
 
 
@@ -950,7 +1082,6 @@ function openEditModal(id){
     
     const overlay = document.createElement("div");
     overlay.className = "custom-modal-overlay";
-    // Sanitize values for inclusion in HTML attributes (especially for notes)
     const safeNote = escapeHtml(r.note || '');
     
     overlay.innerHTML = `<div class="custom-modal" style="width:95%;max-width:500px">
@@ -1033,13 +1164,12 @@ function showTrashList(){
         return;
     }
     
-    // 定义样式常量，与 refreshList 中保持一致
     const grayStyle = `color: var(--muted); font-size: 13px; line-height: 1.4;`; 
 
     trash.forEach(r=>{
         const div = document.createElement("div");
         div.className = "list-item";
-        div.style.background = "#fff0f0"; // 保留回收站记录的背景色
+        div.style.background = "#fff0f0"; 
         div.innerHTML = `
             <input type="checkbox" class="list-check-trash" data-id="${r.id}" style="width:20px;height:20px;flex-shrink:0;margin-right:8px">
             <div style="flex-grow:1;display:flex;flex-direction:column;gap:4px">
@@ -1063,52 +1193,6 @@ function showTrashList(){
         `;
         const cb = div.querySelector(".list-check-trash");
         cb.checked = selectedTrashIds.has(r.id); 
-        cb.onclick = (e) => {
-            e.stopPropagation();
-            selectedTrashIds.has(r.id) ? selectedTrashIds.delete(r.id) : selectedTrashIds.add(r.id);
-            updateTrashSelection();
-        };
-        container.appendChild(div);
-    });
-}
-
-
-function showTrashList111(){ 
-    document.getElementById("listControls").style.display='none';
-    document.getElementById("recordsContainer").style.display='none';
-    document.getElementById("paginationControls").style.display='none';
-    document.getElementById("trashContainer").style.display='block';
-    
-    selectedTrashIds.clear();
-    updateTrashSelection();
-
-    const trash = loadTrash();
-    document.getElementById("trashCount").textContent = trash.length;
-    const container = document.getElementById("trashRecordsContainer");
-    container.innerHTML = "";
-
-    if (trash.length === 0){
-        container.innerHTML = "<div class='small' style='text-align:center'>空空如也</div>";
-        return;
-    }
-
-    trash.forEach(r=>{
-        const div = document.createElement("div");
-        div.className = "list-item";
-        div.style.background = "#fff0f0";
-        div.innerHTML = `
-            <input type="checkbox" class="trash-check" data-id="${r.id}" style="width:20px;height:20px;flex-shrink:0;margin-right:8px">
-            <div style="flex-grow:1;font-size:14px">
-                 <strong>${r.currency} ${r.amount}</strong> - ${r.city} (${formatDateTimeCompact(r.datetime)}) <br>
-                 <span style="color:#666">${escapeHtml(r.note || '无备注')}</span>
-            </div>
-            <div class="btns">
-                <button class="btn edit" onclick="restoreRecord('${r.id}')">恢复</button>
-                <button class="btn del" onclick="purgeRecord('${r.id}')">彻底删除</button>
-            </div>
-        `;
-        const cb = div.querySelector(".trash-check");
-        cb.checked = selectedTrashIds.has(r.id); // Ensure checkbox state reflects set
         cb.onclick = (e) => {
             e.stopPropagation();
             selectedTrashIds.has(r.id) ? selectedTrashIds.delete(r.id) : selectedTrashIds.add(r.id);
@@ -1179,11 +1263,14 @@ statsFilterOwnerEl.addEventListener("change", drawCharts);
 
 function drawCharts(){
     const list = loadRecords();
-    const ownerSet = new Set(["ZYR", "TL", "公共"]); 
+    // 【修改点】：从动态配置中读取所有人列表作为基础集合
+    const conf = loadConfig();
+    const ownerSet = new Set(conf.owner || []); 
+    
+    // 继续保留历史记录中的所有人（防止配置里删除了某人，但他的历史账单被隐藏）
     list.forEach(r => r.owner && ownerSet.add(r.owner));
     const currentSel = Array.from(statsFilterOwnerEl.options).filter(o=>o.selected).map(o=>o.value);
     
-    // Optimization: Check for differences before re-populating the owner filter
     const newOptions = Array.from(ownerSet).sort();
     const existingOptions = Array.from(statsFilterOwnerEl.options).map(o=>o.value);
     
@@ -1195,12 +1282,10 @@ function drawCharts(){
             if (currentSel.includes(o)) opt.selected = true;
             statsFilterOwnerEl.appendChild(opt);
         });
-        // If owner options changed, try to restore selection, but we rely on currentSel for the new options.
     }
 
     const selectedOwners = Array.from(statsFilterOwnerEl.options).filter(o=>o.selected).map(o=>o.value);
     
-    // 8) Single Pass Aggregation
     const weekStart = weekStartDateEl.value ? new Date(weekStartDateEl.value) : new Date();
     weekStart.setHours(0,0,0,0);
     const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate()+7);
@@ -1214,7 +1299,6 @@ function drawCharts(){
     };
 
     list.forEach(r => {
-        // Ensure necessary fields exist for safe filtering/aggregation
         const recordOwner = r.owner || "未指定所有人";
         const recordChannel = r.channel || "未指定";
         const recordPayer = r.payer || "未指定";
@@ -1225,61 +1309,38 @@ function drawCharts(){
 
         const cny = convertToCNY(r.amount, r.currency);
         
-        // Week
         const d = new Date(r.datetime);
         if (!isNaN(d) && d >= weekStart && d < weekEnd) {
-            // Day index: Sunday=0, Monday=1, ... Saturday=6
-            const dayOfWeek = d.getDay(); 
-            // Calculate day difference from weekStart for correct index, handling potential timezone/DST issues slightly better
-            const diffTime = Math.abs(d.getTime() - weekStart.getTime());
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            
-            // Revert to using getDay() for simplicity with fixed 7-day array
-            if (d >= weekStart && d < weekEnd) {
-                // Determine the starting day of the weekStart (0=Sun, 1=Mon, ...)
-                const startDay = weekStart.getDay(); 
-                // Index is relative to the start day
-                let dayIdx = (d.getDay() - startDay + 7) % 7; 
-                
-                // Double check the difference in days to prevent issues if weekStart is not a Sunday
-                const daysSinceStart = Math.floor((d.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24));
-                if (daysSinceStart >= 0 && daysSinceStart < 7) {
-                    // Use daysSinceStart if it's within the 0-6 range, as this correctly maps
-                    // the record's date to the correct index relative to weekStart.
-                    // This is more robust than relying purely on getDay() relative math.
-                    aggregates.week[daysSinceStart] += cny;
-                }
+            const startDay = weekStart.getDay(); 
+            const daysSinceStart = Math.floor((d.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysSinceStart >= 0 && daysSinceStart < 7) {
+                aggregates.week[daysSinceStart] += cny;
             }
         }
 
-        // Tag (Split)
         if (recordTags.length===0) recordTags.push("未分类");
         const amtPerTag = cny / recordTags.length;
         recordTags.forEach(t => aggregates.tag[t] = (aggregates.tag[t]||0) + amtPerTag);
 
-        // Others
         aggregates.channel[recordChannel] = (aggregates.channel[recordChannel]||0) + cny;
         aggregates.payer[recordPayer] = (aggregates.payer[recordPayer]||0) + cny;
         aggregates.city[recordCity] = (aggregates.city[recordCity]||0) + cny;
     });
 
-    // Draw Bar
     const days = ["周日","周一","周二","周三","周四","周五","周六"];
     const labels = [];
-    const startDay = weekStart.getDay(); // 0=Sun, 1=Mon, ...
+    const startDay = weekStart.getDay(); 
     for(let i=0; i<7; i++) {
         labels.push(days[(startDay + i) % 7]);
     }
     drawBarChart(document.getElementById("barChart"), labels, aggregates.week);
 
-    // Draw Pies
     drawPieChart(document.getElementById("categoryPieChart"), aggregates.tag, "未分类");
     drawPieChart(document.getElementById("channelPieChart"), aggregates.channel, "未指定");
     drawPieChart(document.getElementById("payerPieChart"), aggregates.payer, "未指定");
     drawPieChart(document.getElementById("cityPieChart"), aggregates.city, "未指定城市");
 }
 
-// Chart Helpers (Reused essentially)
 function drawBarChart(canvas, labels, values){
     const ctx = canvas.getContext("2d");
     const dpi = window.devicePixelRatio||1;
@@ -1292,18 +1353,15 @@ function drawBarChart(canvas, labels, values){
     const pad = 30;
     const W = rect.width, H = rect.height;
     
-    // Grid
     ctx.strokeStyle = "#eee"; ctx.fillStyle="#888"; ctx.font="10px Arial";
-    // Draw 5 horizontal lines (0, 25%, 50%, 75%, 100%)
     for(let i=0;i<=4;i++){
         const y = pad + (H-2*pad)*(i/4);
-        ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(W,y); ctx.stroke(); // Draw line across the chart area
+        ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(W,y); ctx.stroke(); 
         ctx.fillText(Math.round(max*(1-i/4)), 0, y+4);
     }
     
-    // Bars
-    const bw = (W - pad - 10) / labels.length * 0.6; // 10 is padding on the right
-    const step = (W - pad) / labels.length; // Step size is total width / number of labels
+    const bw = (W - pad - 10) / labels.length * 0.6; 
+    const step = (W - pad) / labels.length; 
     
     labels.forEach((l,i)=>{
         const h = (H-2*pad) * (values[i]/max);
@@ -1333,14 +1391,14 @@ function drawPieChart(canvas, data, defaultLabel = "未指定"){
     const cx = W*0.25, cy = H/2, r = Math.min(W,H)/3;
     
     if(total===0) { 
-        ctx.clearRect(0,0,W,H); // Clear previous chart
+        ctx.clearRect(0,0,W,H); 
         ctx.fillStyle="#999"; 
         ctx.textAlign="center";
         ctx.fillText("无数据", W/2, H/2); 
         return; 
     }
     
-    ctx.clearRect(0,0,W,H); // Clear previous chart
+    ctx.clearRect(0,0,W,H); 
     let start = -Math.PI/2;
     const colors = ["#3498db","#e74c3c","#f1c40f","#2ecc71","#9b59b6","#34495e","#e67e22"];
     
@@ -1351,11 +1409,10 @@ function drawPieChart(canvas, data, defaultLabel = "未指定"){
         start += ang;
     });
     
-    // Legend
     let ly = 20;
     entries.forEach((e,i)=>{
         if(ly > H-20) return;
-        const label = e[0] === "" ? defaultLabel : e[0]; // Handle empty string keys
+        const label = e[0] === "" ? defaultLabel : e[0]; 
         ctx.fillStyle = colors[i%colors.length];
         ctx.fillRect(cx+r+20, ly, 12, 12);
         ctx.fillStyle = "#333"; ctx.textAlign="left";
@@ -1364,7 +1421,7 @@ function drawPieChart(canvas, data, defaultLabel = "未指定"){
     });
 }
 
-/* Export/Import (Standard) */
+/* Export/Import */
 function download(n,c){
     const b = new Blob([c],{type:"text/plain;charset=utf-8"});
     const a = document.createElement("a");
@@ -1372,13 +1429,11 @@ function download(n,c){
 }
 function exportJSON(){ download(`backup_${Date.now()}.json`, JSON.stringify(loadRecords(),null,2)); }
 function exportCSV(){
-    // Include all necessary fields for a robust export
     const headers = ["id", "city", "currency", "amount", "payer", "channel", "owner", "datetime", "tag", "note"];
     let csv = headers.join(",") + "\n";
     csv += loadRecords().map(r => 
         headers.map(h => {
             let val = r[h] !== undefined && r[h] !== null ? r[h] : '';
-            // Escape double quotes and surround with double quotes for safety
             if (typeof val === 'string') {
                 val = '"' + val.replace(/"/g, '""') + '"';
             }
@@ -1387,17 +1442,7 @@ function exportCSV(){
     ).join("\n");
     download(`backup_${Date.now()}.csv`, csv);
 }
-function exportTXT(){
-    const list = loadRecords();
-    let txt = "--- 记账记录备份 ---\n";
-    list.forEach(r => {
-        txt += `\nID: ${r.id}\n日期: ${formatDateTimeCompact(r.datetime)}\n金额: ${r.currency} ${r.amount}\n城市: ${r.city || '-'}\n付款人: ${r.payer || '-'}\n渠道: ${r.channel || '-'}\n所有人: ${r.owner || '-'}\n标签: ${r.tag || '-'}\n备注: ${r.note || '无'}\n`;
-        txt += "----------------------\n";
-    });
-    download(`backup_${Date.now()}.txt`, txt);
-}
 
-// Import implementation simplified for brevity but functional
 function importJSON(){
     const f = document.getElementById("jsonInput").files[0];
     if(!f) return;
@@ -1407,10 +1452,8 @@ function importJSON(){
             const d = JSON.parse(e.target.result);
             if(Array.isArray(d)) {
                 let l = loadRecords();
-                // Add unique ID if missing and merge
                 d.forEach(x => { 
                     if(!x.id) x.id="i"+Date.now()+Math.random().toString(36).slice(2,7); 
-                    // Simple merge, relying on new ID to avoid immediate conflict.
                     l.unshift(x); 
                 });
                 saveRecords(l); hopFeedback(`导入成功，新增 ${d.length} 条记录`); refreshList(); drawCharts();
@@ -1421,17 +1464,13 @@ function importJSON(){
     };
     r.readAsText(f);
 }
-// Placeholder for importCSV function (full implementation is complex due to parsing)
-function importCSV(){
-    alert("CSV 导入功能暂未实现，请使用 JSON 格式。");
-}
-
 
 /* Init */
-// MODIFICATION 4: Call init functions in order
+renderFormSelects(); 
 initDefaults();
+updateRateNote(); // 初始化底部汇率提示文字
 refreshList();
-drawCharts(); // Initial chart draw
+drawCharts(); 
 </script>
 </body>
 </html>
