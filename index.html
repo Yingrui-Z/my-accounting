@@ -378,7 +378,7 @@
 </div>
 
 <footer class="card" style="text-align:center">
-    🔒 数据保存在浏览器本地（localStorage），不会自动上传。
+    🔒 数据保存在浏览器本地，无需联网，不设云端同步，确保物理隔离级的隐私安全。
 </footer>
 
 <script>
@@ -522,8 +522,11 @@ function renderFormSelects() {
         }
         el.innerHTML = html;
 
+        // 优先恢复之前选中的值，如果没有选中值（或已重置），则赋予配置的默认值
         if (currentVal && Array.from(el.options).some(opt => opt.value === currentVal)) {
             el.value = currentVal;
+        } else if (conf.defaults && conf.defaults[key] && Array.from(el.options).some(opt => opt.value === conf.defaults[key])) {
+            el.value = conf.defaults[key];
         }
     }
 }
@@ -536,19 +539,30 @@ function renderSettings() {
 
     // 1. 渲染普通数组类配置
     for (let key in conf) {
-        if (key === 'rates') continue; // 跳过汇率
+        if (key === 'rates' || key === 'defaults') continue; // 跳过汇率和默认配置字段
         
+        let defVal = conf.defaults ? conf.defaults[key] : "";
+
         const section = document.createElement("div");
         section.style.marginBottom = "20px";
         section.innerHTML = `
             <label>${CONFIG_LABELS[key]}</label>
+            <p class="note" style="margin-top:-4px; margin-bottom:8px;">点击左侧星号(☆)将其设为默认选项。</p>
             <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-                ${(conf[key]||[]).map(val => `
-                    <div class="tag-cloud-item" style="display:flex; align-items:center; gap:4px; padding-right:4px; cursor:default;">
+                ${(conf[key]||[]).map(val => {
+                    let isDef = (val === defVal);
+                    // 默认项高亮处理
+                    let activeStyle = isDef ? 'border: 1px solid var(--primary); background: #e7f1ff;' : '';
+                    let starColor = isDef ? '#f1c40f' : '#ccc';
+                    let starIcon = isDef ? '★' : '☆';
+                    
+                    return `
+                    <div class="tag-cloud-item" style="display:flex; align-items:center; gap:4px; padding-right:4px; cursor:default; ${activeStyle}">
+                        <span style="cursor:pointer; font-size:16px; color:${starColor}; line-height:1;" onclick="setDefaultOption('${key}', '${val}')" title="设为默认">${starIcon}</span>
                         <span>${val}</span>
                         <span style="color:var(--danger); cursor:pointer; font-weight:bold; padding:2px 4px; font-size:16px;" onclick="removeConfigOption('${key}', '${val}')">×</span>
-                    </div>
-                `).join("")}
+                    </div>`;
+                }).join("")}
             </div>
             <div style="display:flex; gap:8px; align-items:flex-start;">
                 <input id="input-${key}" placeholder="添加新${CONFIG_LABELS[key] ? CONFIG_LABELS[key].split(' ')[1] : ''}..." style="margin-bottom:0; flex:1;">
@@ -610,11 +624,27 @@ function addConfigOption(key) {
     }
 }
 
+
+// 新增：设置特定选项为默认
+function setDefaultOption(key, val) {
+    const conf = loadConfig();
+    if (!conf.defaults) conf.defaults = {};
+    conf.defaults[key] = val;
+    saveConfig(conf);
+    hopFeedback(`已设为默认选项`);
+}
+
 // 删除选项
 function removeConfigOption(key, val) {
     if (!confirm(`确定要移除选项 [${val}] 吗？\n(这不会影响以往记录)`)) return;
     const conf = loadConfig();
     conf[key] = conf[key].filter(item => item !== val);
+    
+    // 如果删除的是当前的默认选项，自动将列表里第一个剩余选项设为默认
+    if (conf.defaults && conf.defaults[key] === val) {
+        conf.defaults[key] = conf[key].length > 0 ? conf[key][0] : "";
+    }
+    
     saveConfig(conf);
     hopFeedback("移除成功");
 }
@@ -653,17 +683,21 @@ const tagEl = document.getElementById("tag");
 const submitBtn = document.getElementById("submitBtn");
 const tagCloudEl = document.getElementById("tagCloud");
 
-/* Set default time and Load last City */
+/* Set default time and Apply Default Configurations */
 function initDefaults(){
     const now = new Date();
     const localISO = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0,16); 
     datetimeEl.value = localISO;
 
-    const lastCity = localStorage.getItem(CITY_KEY);
-    if (lastCity) {
-        cityEl.value = lastCity;
-    }
-    if (!currencyEl.value) currencyEl.value = '瑞郎';
+    const conf = loadConfig();
+    const defs = conf.defaults || {};
+
+    // 强制作业：重置并应用设置中的默认项
+    if (defs.city && cityEl.querySelector(`option[value="${defs.city}"]`)) cityEl.value = defs.city;
+    if (defs.payer && payerEl.querySelector(`option[value="${defs.payer}"]`)) payerEl.value = defs.payer;
+    if (defs.channel && channelEl.querySelector(`option[value="${defs.channel}"]`)) channelEl.value = defs.channel;
+    if (defs.currency && currencyEl.querySelector(`option[value="${defs.currency}"]`)) currencyEl.value = defs.currency;
+    if (defs.owner && billOwnerEl.querySelector(`option[value="${defs.owner}"]`)) billOwnerEl.value = defs.owner;
 }
 
 /* Error Handling (Inline) */
